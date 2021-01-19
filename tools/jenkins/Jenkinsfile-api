@@ -33,8 +33,8 @@ pipeline{
   }
 
     environment{
-      TOOLS = '77c02f-tools'
-      DEV = '77c02f-dev'
+      TOOLS = 'wbmfsf-tools'
+      DEV = 'wbmfsf-dev'
 
       REPO_NAME = 'educ-grad-sandbox-repo'
       OWNER = 'bcgov'
