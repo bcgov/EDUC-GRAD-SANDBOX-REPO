@@ -124,7 +124,7 @@ pipeline{
         }
       }
     }
-	stage('Promote to DEV') {
+	stage('Promote to DEV(TOOLS)') {
       steps{
         deployStage('Tools', TOOLS, TOOLS_HOST_ROUTE, 'TOOLS')
       }
