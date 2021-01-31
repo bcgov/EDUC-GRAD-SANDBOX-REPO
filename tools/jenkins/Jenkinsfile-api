@@ -44,8 +44,8 @@ pipeline{
       APP_NAME = 'grad-sandbox-api'
       APP_DOMAIN = 'pathfinder.gov.bc.ca'
 
-      SOURCE_REPO_RAW = 'https://github.com/${OWNER}/${REPO_NAME}/main'
-      SOURCE_REPO_REF = 'main'
+      SOURCE_REPO_RAW = 'https://github.com/${OWNER}/${REPO_NAME}/OCP4_Migration'
+      SOURCE_REPO_REF = 'OCP4_Migration'
       SOURCE_REPO_URL = 'https://github.com/${OWNER}/${REPO_NAME}.git'
 
       TOOLS_HOST_ROUTE = "${APP_NAME}-${TOOLS}.${APP_DOMAIN}"
