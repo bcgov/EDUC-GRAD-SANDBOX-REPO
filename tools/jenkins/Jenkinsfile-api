@@ -1,5 +1,36 @@
 pipeline{
-  agent { label 'maven' }
+  agent { 
+  	kubernetes {
+	      label 'maven'
+	      cloud 'openshift'
+	      defaultContainer 'jnlp'
+	      serviceAccount 'jenkins'
+	      podRetention: always()
+	      yaml """
+		kind: Pod
+		metadata:
+		  name: jenkins-slave
+		spec:
+		  containers:
+		  - name: jnlp
+		    image: image-registry.openshift-image-registry.svc:5000/openshift/jenkins-agent-maven:4.0
+		    privileged: false
+		    alwaysPullImage: false
+		    workingDir: /tmp
+		    ttyEnabled: false
+		    resourceRequestCpu: "1"
+		    resourceRequestMemory: 2Gi
+		    resourceLimitCpu: "2"
+		    resourceLimitMemory: 2Gi
+		    volumeMounts:
+		    - mountPath: '/home/jenkins/.m2'
+		      name: pvc
+		  volumes:
+		  - name: pvc
+		    persistentVolumeClaim:
+		      claimName: 'maven-slave-pvc'
+	      """
+    	}
 
     environment{
       TOOLS = '77c02f-tools'
