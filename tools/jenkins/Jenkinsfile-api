@@ -90,7 +90,7 @@ pipeline{
       steps {
         script {
           openshift.withCluster() {
-            openshift.newBuild("--name=${REPO_NAME}-${JOB_NAME}", "--image-stream=ropenjdk-11-rhel8:1.0", "--binary")
+            openshift.newBuild("--name=${REPO_NAME}-${JOB_NAME}", "--image-stream=openjdk-11-rhel8:1.0", "--binary")
           }
         }
       }
