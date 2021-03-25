@@ -5,7 +5,7 @@ pipeline{
       cloud 'openshift'
       defaultContainer 'jnlp'
       serviceAccount 'jenkins'
-      podRetention always
+      podRetention Always
       yaml """
         kind: Pod
         metadata:
