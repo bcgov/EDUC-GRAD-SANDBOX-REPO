@@ -16,7 +16,7 @@ objects:
   spec:
     source:
       git:
-        ref: main
+        ref: OCP4_Migration
         uri: 'https://github.com/bcgov/EDUC-GRAD-SANDBOX-REPO'
       type: Git
     strategy:

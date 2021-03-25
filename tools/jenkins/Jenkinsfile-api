@@ -5,6 +5,7 @@ pipeline{
       cloud 'openshift'
       defaultContainer 'jnlp'
       serviceAccount 'jenkins'
+      podRetention always()
       yaml """
         kind: Pod
         metadata:
@@ -17,10 +18,10 @@ pipeline{
             alwaysPullImage: false
             workingDir: /tmp
             ttyEnabled: false
-            resourceRequestCpu: 250m
-            resourceRequestMemory: 1Gi
-            resourceLimitCpu: 250m
-            resourceLimitMemory: 1Gi
+            resourceRequestCpu: 3
+            resourceRequestMemory: 2Gi
+            resourceLimitCpu: 3
+            resourceLimitMemory: 2Gi
             volumeMounts:
             - mountPath: '/home/jenkins/.m2'
               name: pvc
@@ -31,10 +32,9 @@ pipeline{
       """
     }
   }
-
     environment{
-      TOOLS = 'wbmfsf-tools'
-      DEV = 'wbmfsf-dev'
+      TOOLS = '77c02f-tools'
+      DEV = '77c02f-dev'
 
       REPO_NAME = 'educ-grad-sandbox-repo'
       OWNER = 'bcgov'
@@ -44,8 +44,8 @@ pipeline{
       APP_NAME = 'grad-sandbox-api'
       APP_DOMAIN = 'pathfinder.gov.bc.ca'
 
-      SOURCE_REPO_RAW = 'https://github.com/${OWNER}/${REPO_NAME}/main'
-      SOURCE_REPO_REF = 'main'
+      SOURCE_REPO_RAW = 'https://github.com/${OWNER}/${REPO_NAME}/OCP4_Migration'
+      SOURCE_REPO_REF = 'OCP4_Migration'
       SOURCE_REPO_URL = 'https://github.com/${OWNER}/${REPO_NAME}.git'
 
       TOOLS_HOST_ROUTE = "${APP_NAME}-${TOOLS}.${APP_DOMAIN}"
@@ -79,6 +79,7 @@ pipeline{
         }
       }
     }
+    /*
     stage('Create Image Builder') {
       when {
         expression {
@@ -124,9 +125,9 @@ pipeline{
         }
       }
     }
-	stage('Promote to DEV') {
+    stage('Promote to DEV(TOOLS)') {
       steps{
-        deployStage('Dev', DEV, DEV_HOST_ROUTE, 'dev')
+        deployStage('Tools', TOOLS, TOOLS_HOST_ROUTE, 'TOOLS')
       }
       post{
         success{
@@ -137,6 +138,7 @@ pipeline{
         }
       }
     }
+    */
   }
 }
 

@@ -2,26 +2,26 @@ package ca.bc.gov.gradsandbox.entity;
 
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+//import javax.persistence.Column;
+//import javax.persistence.Entity;
+//import javax.persistence.Id;
+//import javax.persistence.Table;
 
-@Entity
+//@Entity
 @Data
-@Table(name = "TAB_CRSE")
+//@Table(name = "TAB_CRSE")
 public class SandboxEntity {
 
-    @Id
-    @Column(name = "CRSE_CODE")
+    //@Id
+    //@Column(name = "CRSE_CODE")
     private String courseCode;
 
-    @Column(name = "CRSE_LEVEL")
+    //@Column(name = "CRSE_LEVEL")
     private String courseLevel;
 
-    @Column(name = "CRSE_NAME")
+    //@Column(name = "CRSE_NAME")
     private String courseName;
 
-    @Column(name = "CRSE_REG_ID")
+    //@Column(name = "CRSE_REG_ID")
     private String courseRegId;
 }
