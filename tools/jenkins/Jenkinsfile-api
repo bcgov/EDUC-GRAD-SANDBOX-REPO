@@ -79,7 +79,6 @@ pipeline{
         }
       }
     }
-    /*
     stage('Create Image Builder') {
       when {
         expression {
@@ -138,7 +137,6 @@ pipeline{
         }
       }
     }
-    */
   }
 }
 
