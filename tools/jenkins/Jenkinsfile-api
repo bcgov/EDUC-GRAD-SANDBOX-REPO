@@ -142,7 +142,7 @@ pipeline{
 
 def deployStage(String stageEnv, String projectEnv, String hostRouteEnv, String tag) {
 
-  if (!stageEnv.equalsIgnoreCase('Dev')) {
+  if (!stageEnv.equalsIgnoreCase('Tools')) {
     input("Deploy to ${projectEnv}?")
   }
 
