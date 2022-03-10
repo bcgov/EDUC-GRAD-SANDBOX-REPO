@@ -2,23 +2,60 @@
 apiVersion: v1
 kind: Template
 labels:
-  template: 'educ-grad-sandbox-template'
+  template: '${REPO_NAME}-build-template'
 metadata:
-  name: 'educ-grad-sandbox-template'
+  name: '${REPO_NAME}-build-template'
 objects:
-- apiVersion: v1
-  kind: BuildConfig
-  metadata:
-    labels:
-      build: educ-grad-sandbox-pipeline
-    name: educ-grad-sandbox-pipeline
-    namespace: 77c02f-tools
-  spec:
-    source:
-      git:
-        ref: main
-        uri: 'https://github.com/bcgov/EDUC-GRAD-SANDBOX-REPO'
-      type: Git
-    strategy:
-      jenkinsPipelineStrategy:
-        jenkinsfilePath: tools/jenkins/Jenkinsfile-api
+  - kind: BuildConfig
+    apiVersion: build.openshift.io/v1
+    metadata:
+      labels:
+        build: ${REPO_NAME}
+        app: "${REPO_NAME}"
+      name: ${REPO_NAME}-bc
+      namespace: 77c02f-tools
+    spec:
+      resources:
+        requests:
+          cpu: 1
+          memory: 1Gi
+        limits:
+          cpu: 2
+          memory: 3Gi
+      source:
+        git:
+          ref: ${BRANCH_NAME}
+          uri: 'https://github.com/bcgov/${REPO_NAME}'
+        type: Git
+      strategy:
+        dockerStrategy:
+          type: Docker
+          pullSecret:
+            name: artifactory-creds
+      runPolicy: SerialLatestOnly
+      output:
+        to:
+          kind: ImageStreamTag
+          name: '${REPO_NAME}:latest'
+      successfulBuildsHistoryLimit: 2
+      failedBuildsHistoryLimit: 2
+  - kind: ImageStream
+    apiVersion: image.openshift.io/v1
+    metadata:
+      name: ${REPO_NAME}
+      namespace: 77c02f-tools
+      labels:
+        build: ${REPO_NAME}
+        app: "${REPO_NAME}"
+    spec:
+      lookupPolicy:
+        local: false
+parameters:
+  - description: Name of the Git Repository
+    displayName: REPO_NAME
+    name: REPO_NAME
+    required: true
+  - description: Branch from the Git Repository
+    displayName: BRANCH_NAME
+    name: BRANCH_NAME
+    required: true
