@@ -1,5 +1,5 @@
 FROM docker-remote.artifacts.developer.gov.bc.ca/ubuntu:latest
-RUN apt update && apt install openssh-server net-tools sudo -y
+RUN apt-get update && apt-get install openssh-server openssh-client net-tools sudo -y
 RUN useradd -rm -d /home/edgrad_sftp -s /bin/bash -g root -G sudo -u 1000 edgrad_sftp
 RUN service ssh start
 EXPOSE 22
