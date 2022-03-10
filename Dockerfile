@@ -7,10 +7,17 @@ RUN mvn package -DskipTests
 RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 FROM openjdk:11-jdk
-RUN useradd -ms /bin/bash spring
-RUN mkdir -p /logs
-RUN chown -R spring:spring /logs
-RUN chmod 755 /logs
+RUN useradd -ms /bin/bash spring && mkdir -p /logs && chown -R spring:spring /logs && chmod 755 /logs
+
+RUN useradd -rm -d /home/edgrad_sftp -s /bin/bash -G sudo edgrad_sftp
+USER edgrad_sftp
+CMD ssh-keygen -t rsa -m pem -N "" -f ~/.ssh/id_rsa
+CMD echo ${PRIVATE_KEY} > ~/.ssh/id_rsa
+CMD echo ${PUBLIC_KEY} > ~/.ssh/id_rsa.pub
+CMD ssh-keyscan -H ${BCMAIL_SFTP_HOST} > ~/.ssh/known_hosts
+CMD ["/usr/sbin/sshd", "-D"]
+EXPOSE 22
+
 USER spring
 VOLUME /tmp
 ARG DEPENDENCY=/workspace/app/target/dependency
