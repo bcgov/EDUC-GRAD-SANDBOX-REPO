@@ -4,5 +4,4 @@ RUN useradd -rm -d /home/edgrad_sftp -s /bin/bash -G sudo -u 1000 edgrad_sftp
 RUN service ssh start
 EXPOSE 22
 USER edgrad_sftp
-#RUN ssh-keygen -t rsa -m pem -N "" -f ~/.ssh/id_rsa
-CMD ["/usr/bin/ssh","-D"]
+CMD ["/usr/sbin/sshd","-D"]
