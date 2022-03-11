@@ -9,6 +9,9 @@ RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 FROM docker-remote.artifacts.developer.gov.bc.ca/openjdk:11-jdk
 RUN useradd -ms /bin/bash spring && mkdir -p /logs && chown -R spring:spring /logs && chmod 755 /logs
 
+ENV BCMAIL_SFTP_USER=edgrad_sftp
+ENV BCMAIL_SSH_PRIVATE_KEY=private-key-goes-here
+ENV  BCMAIL_SSH_PUBLIC_KEY=public-key-goes-here
 RUN useradd -rm -d /home/${BCMAIL_SFTP_USER} -s /bin/bash -G sudo ${BCMAIL_SFTP_USER}
 USER ${BCMAIL_SFTP_USER}
 RUN ssh-keygen -t rsa -m pem -N "" -f ~/.ssh/id_rsa
