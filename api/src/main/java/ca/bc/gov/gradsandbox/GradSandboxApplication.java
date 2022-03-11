@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class GradsandboxApplication {
+public class GradSandboxApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(GradsandboxApplication.class, args);
+		SpringApplication.run(GradSandboxApplication.class, args);
 	}
 
 }
