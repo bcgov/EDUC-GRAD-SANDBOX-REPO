@@ -32,6 +32,27 @@ objects:
           type: Docker
           pullSecret:
             name: artifactory-creds
+          env:
+            - name: BCMAIL_SSH_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-distribution-ssh-keys-secret
+                  key: BCMAIL_SSH_PUBLIC_KEY
+            - name: BCMAIL_SSH_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-distribution-ssh-keys-secret
+                  key: BCMAIL_SSH_PRIVATE_KEY
+            - name: BCMAIL_SFTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: api-distribution-ssh-keys-secret
+                  key: BCMAIL_SFTP_USER
+            - name: BCMAIL_SFTP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: api-distribution-ssh-keys-secret
+                  key: BCMAIL_SFTP_HOST
       runPolicy: SerialLatestOnly
       output:
         to:
