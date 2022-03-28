@@ -16,7 +16,7 @@ public class SFTPUtils {
 
     public boolean sftpUpload() {
         String localFile = "/app/static/upload-this.file";
-        String remoteFile = "/home/" + SFTP_USERNAME + "/tmp/uploaded-this.file";
+        String remoteFile = "/inbox/dev/uploaded-this.file";
         Session jschSession = null;
 
         try {
