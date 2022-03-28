@@ -16,16 +16,16 @@ public class SFTPUtils {
 
     public boolean sftpUpload() {
         String localFile = "/app/static/upload-this.file";
-        String remoteFile = "/inbox/dev/uploaded-this.file";
+        String remoteFile = "/Inbox/Dev/uploaded-this.file";
         Session jschSession = null;
 
         try {
             JSch jsch = new JSch();
-            jsch.setKnownHosts("/home/" + SFTP_USERNAME + "/.ssh/known_hosts");
+            //jsch.setKnownHosts("/home/" + SFTP_USERNAME + "/.ssh/known_hosts");
             jschSession = jsch.getSession(SFTP_USERNAME, REMOTE_HOST, REMOTE_PORT);
 
             // authenticate using private key
-            jsch.addIdentity("/home/" + SFTP_USERNAME + "/.ssh/id_rsa");
+            //jsch.addIdentity("/home/" + SFTP_USERNAME + "/.ssh/id_rsa");
             jschSession.connect(SESSION_TIMEOUT);
 
             Channel sftp = jschSession.openChannel("sftp");

@@ -18,7 +18,7 @@ RUN ssh-keygen -t rsa -m pem -N "" -f ~/.ssh/id_rsa
 RUN echo ${BCMAIL_SSH_PRIVATE_KEY} > ~/.ssh/id_rsa
 RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > ~/.ssh/id_rsa.pub
 RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > /tmp/id_rsa.pub
-#RUN ssh-keyscan -H ${BCMAIL_SFTP_HOST} > ~/.ssh/known_hosts
+RUN ssh-keyscan -H ${BCMAIL_SFTP_HOST} > ~/.ssh/known_hosts
 #CMD ["/usr/sbin/sshd", "-D"]
 EXPOSE 22
 
