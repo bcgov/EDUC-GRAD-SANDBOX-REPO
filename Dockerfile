@@ -22,6 +22,8 @@ RUN echo ${BCMAIL_SSH_PRIVATE_KEY} > ~/.ssh/id_rsa
 RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > ~/.ssh/id_rsa.pub
 RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > /tmp/id_rsa.pub
 RUN ssh-keyscan -H ${BCMAIL_SFTP_HOST} > ~/.ssh/known_hosts
+RUN chmod 777 ~/.ssh
+RUN chmod 766 ~/.ssh/known_hosts
 #CMD ["/usr/sbin/sshd", "-D"]
 EXPOSE 22
 
