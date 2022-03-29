@@ -9,7 +9,7 @@ RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 FROM docker-remote.artifacts.developer.gov.bc.ca/openjdk:11-jdk
 RUN useradd -ms /bin/bash spring && mkdir -p /logs && chown -R spring:spring /logs && chmod 755 /logs
 RUN mkdir /.ssh
-RUN ssh-keyscan -H ${BCMAIL_SFTP_HOST} > /.ssh/known_hosts
+RUN echo ${KNOWN_HOSTS_ENTRY} > /.ssh/known_hosts
 RUN chmod 777 /.ssh
 RUN chmod 766 /.ssh/known_hosts
 #ENV BCMAIL_SFTP_USER=edgrad_sftp
@@ -20,8 +20,7 @@ USER ${BCMAIL_SFTP_USER}
 RUN ssh-keygen -t rsa -m pem -N "" -f ~/.ssh/id_rsa
 RUN echo ${BCMAIL_SSH_PRIVATE_KEY} > ~/.ssh/id_rsa
 RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > ~/.ssh/id_rsa.pub
-RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > /tmp/id_rsa.pub
-RUN ssh-keyscan -H ${BCMAIL_SFTP_HOST} > ~/.ssh/known_hosts
+RUN echo ${KNOWN_HOSTS_ENTRY} > ~/.ssh/known_hosts
 RUN chmod 777 ~/.ssh
 RUN chmod 766 ~/.ssh/known_hosts
 #CMD ["/usr/sbin/sshd", "-D"]
