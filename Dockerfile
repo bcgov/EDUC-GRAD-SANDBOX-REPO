@@ -15,14 +15,14 @@ RUN chmod 766 /.ssh/known_hosts
 #ENV BCMAIL_SFTP_USER=edgrad_sftp
 #ENV BCMAIL_SSH_PRIVATE_KEY=private-key-goes-here
 #ENV  BCMAIL_SSH_PUBLIC_KEY=public-key-goes-here
-RUN useradd -rm -d /home/${BCMAIL_SFTP_USER} -s /bin/bash -G sudo ${BCMAIL_SFTP_USER} -p ${BCMAIL_SFTP_USER}
-USER ${BCMAIL_SFTP_USER}
-RUN ssh-keygen -t rsa -m pem -N "" -f ~/.ssh/id_rsa
-RUN echo ${BCMAIL_SSH_PRIVATE_KEY} > ~/.ssh/id_rsa
-RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > ~/.ssh/id_rsa.pub
+#RUN useradd -rm -d /home/${BCMAIL_SFTP_USER} -s /bin/bash -G sudo ${BCMAIL_SFTP_USER} -p ${BCMAIL_SFTP_USER}
+#USER ${BCMAIL_SFTP_USER}
+#RUN ssh-keygen -t rsa -m pem -N "" -f /.ssh/id_rsa
+RUN echo ${BCMAIL_SSH_PRIVATE_KEY} > /.ssh/id_rsa
+RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > /.ssh/id_rsa.pub
 RUN echo ${KNOWN_HOSTS_ENTRY} > ~/.ssh/known_hosts
-RUN chmod 777 ~/.ssh
-RUN chmod 766 ~/.ssh/known_hosts
+#RUN chmod 777 ~/.ssh
+#RUN chmod 766 ~/.ssh/known_hosts
 #CMD ["/usr/sbin/sshd", "-D"]
 EXPOSE 22
 
