@@ -54,10 +54,10 @@ objects:
                   name: api-distribution-ssh-keys-secret
                   key: BCMAIL_SFTP_HOST
             - name: KNOWN_HOSTS_ENTRY
-                valueFrom:
-                  secretKeyRef:
-                    name: api-distribution-ssh-keys-secret
-                    key: KNOWN_HOSTS_ENTRY
+              valueFrom:
+                secretKeyRef:
+                  name: api-distribution-ssh-keys-secret
+                  key: KNOWN_HOSTS_ENTRY
       runPolicy: SerialLatestOnly
       output:
         to:
