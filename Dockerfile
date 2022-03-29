@@ -10,7 +10,7 @@ FROM docker-remote.artifacts.developer.gov.bc.ca/openjdk:11-jdk
 RUN useradd -ms /bin/bash spring && mkdir -p /logs && chown -R spring:spring /logs && chmod 755 /logs
 RUN mkdir /.ssh
 RUN ssh-keyscan -H ${BCMAIL_SFTP_HOST} > /.ssh/known_hosts
-RUN chmod 766 /.ssh
+RUN chmod 777 /.ssh
 RUN chmod 766 /.ssh/known_hosts
 #ENV BCMAIL_SFTP_USER=edgrad_sftp
 #ENV BCMAIL_SSH_PRIVATE_KEY=private-key-goes-here
