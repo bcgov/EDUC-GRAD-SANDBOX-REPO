@@ -8,13 +8,8 @@ RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
 
 FROM docker-remote.artifacts.developer.gov.bc.ca/openjdk:11-jdk
 RUN useradd -ms /bin/bash spring && mkdir -p /logs && chown -R spring:spring /logs && chmod 755 /logs
-RUN mkdir /.ssh && echo ${KNOWN_HOSTS_ENTRY} > /.ssh/known_hosts && echo ${BCMAIL_SSH_PRIVATE_KEY} > /.ssh/id_rsa
-RUN echo ${BCMAIL_SSH_PUBLIC_KEY} > /.ssh/id_rsa.pub
+RUN mkdir /.ssh && echo ${KNOWN_HOSTS_ENTRY} > /.ssh/known_hosts && echo ${BCMAIL_SSH_PRIVATE_KEY} > /.ssh/id_rsa && echo ${BCMAIL_SSH_PUBLIC_KEY} > /.ssh/id_rsa.pub
 RUN chown -R 1002710000:1002710000 /.ssh /.ssh/known_hosts /.ssh/id_rsa /.ssh/id_rsa.pub
-#RUN chmod 777 /.ssh
-#RUN chmod 766 /.ssh/known_hosts
-#RUN chmod 766 /.ssh/id_rsa
-#RUN chmod 766 /.ssh/id_rsa.pub
 EXPOSE 22
 
 USER spring
