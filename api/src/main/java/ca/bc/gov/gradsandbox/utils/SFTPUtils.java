@@ -21,13 +21,13 @@ public class SFTPUtils {
 
         try {
             JSch jsch = new JSch();
-            //jsch.setKnownHosts("/.ssh/known_hosts");
+            jsch.setKnownHosts("/.ssh/known_hosts");
             //jsch.setKnownHosts("/home/" + SFTP_USERNAME + "/.ssh/known_hosts");
             //jsch.setKnownHosts("C:\\Users\\kamal.mohammed\\.ssh\\known_hosts");
             jschSession = jsch.getSession(SFTP_USERNAME, REMOTE_HOST, REMOTE_PORT);
 
             // authenticate using private key
-            //jsch.addIdentity("/.ssh/id_rsa");
+            jsch.addIdentity("/.ssh/id_rsa");
             //jsch.addIdentity("/home/" + SFTP_USERNAME + "/.ssh/id_rsa");
             //jsch.addIdentity("C:\\Users\\kamal.mohammed\\.ssh\\id_rsa");
             jschSession.connect(SESSION_TIMEOUT);
