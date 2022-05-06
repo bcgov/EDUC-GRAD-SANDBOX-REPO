@@ -19,4 +19,12 @@ public class SFTPController {
         else
             return "Upload Failed";
     }
+
+    @GetMapping("/upload-tsw")
+    public String uploadTSW() {
+        if (sftpUtils.sftpUploadTSW())
+            return "Upload Complete";
+        else
+            return "Upload Failed";
+    }
 }

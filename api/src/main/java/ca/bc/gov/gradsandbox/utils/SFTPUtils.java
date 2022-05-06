@@ -14,9 +14,50 @@ public class SFTPUtils {
     private static final int SESSION_TIMEOUT = 10000;
     private static final int CHANNEL_TIMEOUT = 5000;
 
+    @Value("${tsw.sftp.remote.host}")
+    private String TSW_REMOTE_HOST;
+    @Value("${tsw.sftp.username}")
+    private String TSW_SFTP_USERNAME;
+
     public boolean sftpUpload() {
         String localFile = "/app/static/upload-this.file";
         String remoteFile = "/Inbox/Dev/uploaded-this.file";
+        Session jschSession = null;
+
+        try {
+            JSch jsch = new JSch();
+            jsch.setKnownHosts("/.ssh/known_hosts");
+            //jsch.setKnownHosts("/home/" + SFTP_USERNAME + "/.ssh/known_hosts");
+            //jsch.setKnownHosts("C:\\Users\\kamal.mohammed\\.ssh\\known_hosts");
+            jschSession = jsch.getSession(SFTP_USERNAME, REMOTE_HOST, REMOTE_PORT);
+
+            // authenticate using private key
+            jsch.addIdentity("/.ssh/id_rsa");
+            //jsch.addIdentity("/home/" + SFTP_USERNAME + "/.ssh/id_rsa");
+            //jsch.addIdentity("C:\\Users\\kamal.mohammed\\.ssh\\id_rsa");
+            jschSession.connect(SESSION_TIMEOUT);
+
+            Channel sftp = jschSession.openChannel("sftp");
+            sftp.connect(CHANNEL_TIMEOUT);
+            ChannelSftp channelSftp = (ChannelSftp) sftp;
+
+            // transfer file from local to remote server
+            channelSftp.put(localFile, remoteFile);
+            channelSftp.exit();
+            return true;
+        } catch (JSchException | SftpException e) {
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (jschSession != null) {
+                jschSession.disconnect();
+            }
+        }
+    }
+
+    public boolean sftpUploadTSW() {
+        String localFile = "/app/static/upload-this.file";
+        String remoteFile = "/$1$dga5037/EDUC/XTD/USERS/EDUC_XTD_MGR/GRAD_TSW_TEST";
         Session jschSession = null;
 
         try {

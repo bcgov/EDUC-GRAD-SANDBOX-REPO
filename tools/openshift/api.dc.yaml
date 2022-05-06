@@ -60,6 +60,8 @@ objects:
                 - secretRef:
                     name: api-distribution-ssh-keys-secret
                 - secretRef:
+                    name: api-tsw-ssh-keys-secret
+                - secretRef:
                     name: grad-keycloak-pk-secret
               resources: {}
       test: false
