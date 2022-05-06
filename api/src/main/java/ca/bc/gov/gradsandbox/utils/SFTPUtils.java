@@ -57,7 +57,7 @@ public class SFTPUtils {
 
     public boolean sftpUploadTSW() {
         String localFile = "/app/static/upload-this.file";
-        String remoteFile = "~/GRAD_TSW_TEST";
+        String remoteFile = "/$1$dga5037/EDUC/XTD/USERS/EDUC_XTD_MGR/GRAD_TSW_TEST/uploaded-this.file";
         Session jschSession = null;
 
         try {
