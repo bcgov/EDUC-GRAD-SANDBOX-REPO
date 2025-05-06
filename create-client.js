@@ -9,7 +9,7 @@ const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 
 async function getAccessToken() {
-  const url = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/token`;
+  const url = `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/token`;
   const params = new URLSearchParams();
   params.append('grant_type', 'password');
   params.append('client_id', 'admin-cli');
@@ -21,7 +21,7 @@ async function getAccessToken() {
 }
 
 async function createClient(token) {
-  const url = `${keycloakUrl}/admin/realms/${realm}/clients`;
+  const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients`;
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
