@@ -1,12 +1,15 @@
 const axios = require('axios');
+const fs = require('fs');
+const path = require('path');
+
+// Load config
+const configPath = path.resolve(__dirname, 'clients-config.json');
+const clients = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 
 const keycloakUrl = process.env.KEYCLOAK_URL;
 const realm = process.env.KEYCLOAK_REALM;
 const adminUser = process.env.KEYCLOAK_ADMIN_USER;
 const adminPass = process.env.KEYCLOAK_ADMIN_PASS;
-const clientId = process.env.CLIENT_ID;
-const clientSecret = process.env.CLIENT_SECRET;
-const scopes = process.env.CLIENT_SCOPES?.split(',') || [];
 
 async function getAccessToken() {
   const url = `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/token`;
@@ -20,7 +23,7 @@ async function getAccessToken() {
   return response.data.access_token;
 }
 
-async function getClientByClientId(token) {
+async function getClientByClientId(token, clientId) {
   const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients?clientId=${encodeURIComponent(clientId)}`;
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.get(url, { headers });
@@ -28,43 +31,34 @@ async function getClientByClientId(token) {
   return response.data.length > 0 ? response.data[0] : null;
 }
 
-async function createClient(token) {
+async function createClient(token, client) {
   const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients`;
   const headers = {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json'
   };
 
-  const clientData = {
-    clientId,
-    secret: clientSecret,
-    enabled: true,
-    protocol: "openid-connect",
-    publicClient: false,
-    serviceAccountsEnabled: true,
-    standardFlowEnabled: false,
-    directAccessGrantsEnabled: false
+  const data = {
+    clientId: client.clientId,
+    secret: client.secret,
+    ...client.settings
   };
 
-  const response = await axios.post(url, clientData, { headers });
-  return response.headers.location.split('/').pop(); // return created client ID
+  const response = await axios.post(url, data, { headers });
+  return response.headers.location.split('/').pop();
 }
 
-async function updateClient(token, client) {
-  const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${client.id}`;
+async function updateClient(token, existingClient, client) {
+  const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${existingClient.id}`;
   const headers = {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json'
   };
 
   const updatedData = {
-    ...client,
-    secret: clientSecret,
-    enabled: true,
-    publicClient: false,
-    serviceAccountsEnabled: true,
-    standardFlowEnabled: false,
-    directAccessGrantsEnabled: false
+    ...existingClient,
+    secret: client.secret,
+    ...client.settings
   };
 
   await axios.put(url, updatedData, { headers });
@@ -72,15 +66,14 @@ async function updateClient(token, client) {
 
 async function ensureScopeExists(token, scopeName) {
   const headers = { Authorization: `Bearer ${token}` };
-
   const scopesUrl = `${keycloakUrl}/auth/admin/realms/${realm}/client-scopes`;
-  const scopeList = await axios.get(scopesUrl, { headers });
 
-  let scope = scopeList.data.find(s => s.name === scopeName.trim());
+  const response = await axios.get(scopesUrl, { headers });
+  let scope = response.data.find(s => s.name === scopeName.trim());
 
   if (!scope) {
     console.log(`➕ Creating missing scope "${scopeName}"...`);
-    const createResponse = await axios.post(scopesUrl, {
+    await axios.post(scopesUrl, {
       name: scopeName,
       protocol: "openid-connect",
       attributes: {
@@ -89,23 +82,19 @@ async function ensureScopeExists(token, scopeName) {
       }
     }, { headers });
 
-    // Fetch the newly created scope ID
-    const newList = await axios.get(scopesUrl, { headers });
-    scope = newList.data.find(s => s.name === scopeName.trim());
+    const updatedList = await axios.get(scopesUrl, { headers });
+    scope = updatedList.data.find(s => s.name === scopeName.trim());
   }
 
   return scope;
 }
 
-async function assignScopes(token, clientId) {
+async function assignScopes(token, clientId, scopeNames) {
   const headers = { Authorization: `Bearer ${token}` };
 
-  for (const scopeName of scopes) {
+  for (const scopeName of scopeNames || []) {
     const scope = await ensureScopeExists(token, scopeName);
-    if (!scope) {
-      console.warn(`⚠️ Could not ensure scope "${scopeName}" exists.`);
-      continue;
-    }
+    if (!scope) continue;
 
     const assignUrl = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${clientId}/default-client-scopes/${scope.id}`;
     try {
@@ -125,23 +114,24 @@ async function assignScopes(token, clientId) {
   try {
     const token = await getAccessToken();
 
-    let client = await getClientByClientId(token);
-    let clientIdValue;
+    for (const client of clients) {
+      console.log(`🚀 Processing client "${client.clientId}"...`);
+      let existingClient = await getClientByClientId(token, client.clientId);
+      let clientIdValue;
 
-    if (client) {
-      console.log(`ℹ️ Client "${clientId}" exists. Updating...`);
-      await updateClient(token, client);
-      clientIdValue = client.id;
-    } else {
-      console.log(`➕ Creating client "${clientId}"...`);
-      clientIdValue = await createClient(token);
+      if (existingClient) {
+        await updateClient(token, existingClient, client);
+        clientIdValue = existingClient.id;
+        console.log(`🔄 Updated client "${client.clientId}".`);
+      } else {
+        clientIdValue = await createClient(token, client);
+        console.log(`➕ Created client "${client.clientId}".`);
+      }
+
+      await assignScopes(token, clientIdValue, client.scopes);
     }
 
-    if (scopes.length > 0) {
-      await assignScopes(token, clientIdValue);
-    }
-
-    console.log(`✅ Done.`);
+    console.log(`✅ All clients processed.`);
   } catch (err) {
     console.error('❌ Error:', err.response?.data || err.message);
     process.exit(1);
