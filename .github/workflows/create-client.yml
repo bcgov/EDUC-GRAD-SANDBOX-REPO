@@ -20,7 +20,7 @@ jobs:
         run: npm install axios
 
       - name: Create or update clients in Keycloak
-        run: node ./tools/config/create-clients.js
+        run: node ./tools/config/clients-and-scopes.js
         env:
           KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
           KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
