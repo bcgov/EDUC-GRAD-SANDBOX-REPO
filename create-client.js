@@ -70,29 +70,52 @@ async function updateClient(token, client) {
   await axios.put(url, updatedData, { headers });
 }
 
-async function assignScopes(token, clientId) {
+async function ensureScopeExists(token, scopeName) {
   const headers = { Authorization: `Bearer ${token}` };
 
-  // Get available client scopes
   const scopesUrl = `${keycloakUrl}/auth/admin/realms/${realm}/client-scopes`;
   const scopeList = await axios.get(scopesUrl, { headers });
 
+  let scope = scopeList.data.find(s => s.name === scopeName.trim());
+
+  if (!scope) {
+    console.log(`➕ Creating missing scope "${scopeName}"...`);
+    const createResponse = await axios.post(scopesUrl, {
+      name: scopeName,
+      protocol: "openid-connect",
+      attributes: {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    }, { headers });
+
+    // Fetch the newly created scope ID
+    const newList = await axios.get(scopesUrl, { headers });
+    scope = newList.data.find(s => s.name === scopeName.trim());
+  }
+
+  return scope;
+}
+
+async function assignScopes(token, clientId) {
+  const headers = { Authorization: `Bearer ${token}` };
+
   for (const scopeName of scopes) {
-    const scope = scopeList.data.find(s => s.name === scopeName.trim());
+    const scope = await ensureScopeExists(token, scopeName);
     if (!scope) {
-      console.warn(`⚠️ Scope "${scopeName}" not found. Skipping.`);
+      console.warn(`⚠️ Could not ensure scope "${scopeName}" exists.`);
       continue;
     }
 
     const assignUrl = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${clientId}/default-client-scopes/${scope.id}`;
     try {
       await axios.put(assignUrl, null, { headers });
-      console.log(`✅ Assigned scope "${scopeName}" to client.`);
+      console.log(`✅ Assigned scope "${scope.name}" to client.`);
     } catch (err) {
       if (err.response?.status === 409) {
-        console.log(`ℹ️ Scope "${scopeName}" already assigned.`);
+        console.log(`ℹ️ Scope "${scope.name}" already assigned.`);
       } else {
-        console.error(`❌ Failed to assign scope "${scopeName}":`, err.message);
+        console.error(`❌ Failed to assign scope "${scope.name}":`, err.message);
       }
     }
   }
