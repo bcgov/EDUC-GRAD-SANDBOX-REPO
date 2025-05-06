@@ -9,7 +9,7 @@ const clientSecret = process.env.CLIENT_SECRET;
 const scopes = process.env.CLIENT_SCOPES?.split(',') || [];
 
 async function getAccessToken() {
-  const url = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/token`;
+  const url = `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/token`;
   const params = new URLSearchParams();
   params.append('grant_type', 'password');
   params.append('client_id', 'admin-cli');
@@ -21,7 +21,7 @@ async function getAccessToken() {
 }
 
 async function getClientByClientId(token) {
-  const url = `${keycloakUrl}/admin/realms/${realm}/clients?clientId=${encodeURIComponent(clientId)}`;
+  const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients?clientId=${encodeURIComponent(clientId)}`;
   const headers = { Authorization: `Bearer ${token}` };
   const response = await axios.get(url, { headers });
 
@@ -29,7 +29,7 @@ async function getClientByClientId(token) {
 }
 
 async function createClient(token) {
-  const url = `${keycloakUrl}/admin/realms/${realm}/clients`;
+  const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients`;
   const headers = {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ async function createClient(token) {
 }
 
 async function updateClient(token, client) {
-  const url = `${keycloakUrl}/admin/realms/${realm}/clients/${client.id}`;
+  const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${client.id}`;
   const headers = {
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json'
@@ -74,7 +74,7 @@ async function assignScopes(token, clientId) {
   const headers = { Authorization: `Bearer ${token}` };
 
   // Get available client scopes
-  const scopesUrl = `${keycloakUrl}/admin/realms/${realm}/client-scopes`;
+  const scopesUrl = `${keycloakUrl}/auth/admin/realms/${realm}/client-scopes`;
   const scopeList = await axios.get(scopesUrl, { headers });
 
   for (const scopeName of scopes) {
@@ -84,7 +84,7 @@ async function assignScopes(token, clientId) {
       continue;
     }
 
-    const assignUrl = `${keycloakUrl}/admin/realms/${realm}/clients/${clientId}/default-client-scopes/${scope.id}`;
+    const assignUrl = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${clientId}/default-client-scopes/${scope.id}`;
     try {
       await axios.put(assignUrl, null, { headers });
       console.log(`✅ Assigned scope "${scopeName}" to client.`);
