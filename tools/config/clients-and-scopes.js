@@ -12,12 +12,12 @@ const adminUser = process.env.KEYCLOAK_ADMIN_USER;
 const adminPass = process.env.KEYCLOAK_ADMIN_PASS;
 
 async function getAccessToken() {
-  const url = `${keycloakUrl}/auth/admin/realms/${realm}/protocol/openid-connect/token`;
+  const url = `${keycloakUrl}/admin/realms/${realm}/protocol/openid-connect/token`;
   const params = new URLSearchParams();
-  params.append('grant_type', 'client_credentials');
-  //params.append('client_id', 'admin-cli');
-  params.append('client_id', adminUser);
-  params.append('client_secret', adminPass);
+  params.append('grant_type', 'password');
+  params.append('client_id', 'admin-cli');
+  params.append('username', adminUser);
+  params.append('password', adminPass);
 
   const response = await axios.post(url, params);
   return response.data.access_token;
