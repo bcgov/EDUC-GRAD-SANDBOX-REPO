@@ -16,8 +16,8 @@ async function getAccessToken() {
   const params = new URLSearchParams();
   params.append('grant_type', 'client_credentials');
   //params.append('client_id', 'admin-cli');
-  params.append('username', adminUser);
-  params.append('password', adminPass);
+  params.append('client_id', adminUser);
+  params.append('client_secret', adminPass);
 
   const response = await axios.post(url, params);
   return response.data.access_token;
