@@ -1,4 +1,4 @@
-name: Create Keycloak Client
+name: Create or Update Keycloak Clients
 
 on:
   workflow_dispatch:
@@ -20,7 +20,7 @@ jobs:
         run: npm install axios
 
       - name: Create or update clients in Keycloak
-        run: node manage-multiple-clients.js
+        run: node ./tools/config/create-clients.js
         env:
           KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
           KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
