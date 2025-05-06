@@ -1,0 +1,28 @@
+[
+  {
+    "clientId": "client-one",
+    "secret": "secret-one",
+    "scopes": ["email", "custom-scope-1"],
+    "settings": {
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    }
+  },
+  {
+    "clientId": "client-two",
+    "secret": "secret-two",
+    "scopes": ["profile", "custom-scope-2"],
+    "settings": {
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "serviceAccountsEnabled": true,
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": false
+    }
+  }
+]
