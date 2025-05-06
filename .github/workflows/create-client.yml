@@ -28,3 +28,4 @@ jobs:
           KEYCLOAK_ADMIN_PASS: ${{ secrets.KEYCLOAK_ADMIN_PASS }}
           CLIENT_ID: ${{ secrets.CLIENT_ID }}
           CLIENT_SECRET: ${{ secrets.CLIENT_SECRET }}
+          CLIENT_SCOPES: ${{ secrets.CLIENT_SCOPES }}
