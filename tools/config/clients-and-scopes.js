@@ -14,7 +14,7 @@ const adminPass = process.env.KEYCLOAK_ADMIN_PASS;
 async function getAccessToken() {
   const url = `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/token`;
   const params = new URLSearchParams();
-  params.append('grant_type', 'client-credentials');
+  params.append('grant_type', 'client_credentials');
   //params.append('client_id', 'admin-cli');
   params.append('username', adminUser);
   params.append('password', adminPass);
