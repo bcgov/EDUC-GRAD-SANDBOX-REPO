@@ -7,14 +7,14 @@ const realm = process.env.KEYCLOAK_REALM;
 const adminUser = process.env.KEYCLOAK_ADMIN_USER;
 const adminPass = process.env.KEYCLOAK_ADMIN_PASS;
 
-const openshiftApi = process.env.OPENSHIFT_API_URL; // e.g., https://api.cluster.local:6443
+const openshiftApi = process.env.OPENSHIFT_API_URL;
 const openshiftNamespace = process.env.OPENSHIFT_NAMESPACE;
-const openshiftToken = process.env.OPENSHIFT_TOKEN; // Service account token
+const openshiftToken = process.env.OPENSHIFT_TOKEN;
 
-const config = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'clients-to-sync.json'), 'utf8'));
+const config = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'clients.json'), 'utf8'));
 
 async function getAccessToken() {
-  const url = `${keycloakUrl}/realms/${realm}/protocol/openid-connect/token`;
+  const url = `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/token`;
   const params = new URLSearchParams();
   params.append('grant_type', 'password');
   params.append('client_id', 'admin-cli');
@@ -27,13 +27,13 @@ async function getAccessToken() {
 
 async function getClientCredentials(token, clientId) {
   const headers = { Authorization: `Bearer ${token}` };
-  const searchUrl = `${keycloakUrl}/admin/realms/${realm}/clients?clientId=${encodeURIComponent(clientId)}`;
+  const searchUrl = `${keycloakUrl}/auth/admin/realms/${realm}/clients?clientId=${encodeURIComponent(clientId)}`;
   const clientResp = await axios.get(searchUrl, { headers });
 
   if (!clientResp.data.length) throw new Error(`Client "${clientId}" not found`);
 
   const client = clientResp.data[0];
-  const secretUrl = `${keycloakUrl}/admin/realms/${realm}/clients/${client.id}/client-secret`;
+  const secretUrl = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${client.id}/client-secret`;
   const secretResp = await axios.get(secretUrl, { headers });
 
   return {
