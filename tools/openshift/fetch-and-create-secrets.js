@@ -63,8 +63,8 @@ async function createK8sSecret({ clientId, secret }) {
     },
     type: 'Opaque',
     data: {
-      `${clientIdKey}`: Buffer.from(clientId).toString('base64'),
-      `${clientSecretKey}`: Buffer.from(secret).toString('base64')
+      ${clientIdKey}: Buffer.from(clientId).toString('base64'),
+      ${clientSecretKey}: Buffer.from(secret).toString('base64')
     }
   };
 
