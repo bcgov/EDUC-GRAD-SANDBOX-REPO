@@ -1,0 +1,81 @@
+name: Build & Deploy to DEV from main branch
+
+env:
+  # 🖊️ EDIT your repository secrets to log into your OpenShift cluster and set up the context.
+  # See https://github.com/redhat-actions/oc-login#readme for how to retrieve these values.
+  # To get a permanent token, refer to https://github.com/redhat-actions/oc-login/wiki/Using-a-Service-Account-for-GitHub-Actions
+  OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
+  OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
+  OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-dev
+  GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}
+
+  # 🖊️ EDIT to change the image registry settings.
+  # Registries such as GHCR, Quay.io, and Docker Hub are supported.
+  IMAGE_REGISTRY: ghcr.io/${{ github.repository_owner }}
+  IMAGE_REGISTRY_USER: ${{ github.actor }}
+  IMAGE_REGISTRY_PASSWORD: ${{ github.token }}
+
+  SPRING_BOOT_IMAGE_NAME: educ-grad-course-api
+
+  REPO_NAME: "educ-grad-sandbox-repo"
+  BRANCH: "main"
+  TAG: "latest"
+
+on:
+  # https://docs.github.com/en/actions/reference/events-that-trigger-workflows
+  workflow_dispatch:
+
+jobs:
+  openshift-ci-cd:
+    name: Build and deploy to OpenShift DEV
+    runs-on: ubuntu-22.04
+    environment: dev
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Determine image tags
+        if: env.TAG == ''
+        run: |
+          echo "TAG=latest ${GITHUB_SHA::12}" | tee -a $GITHUB_ENV
+
+      - name: Login to Docker Hub
+        run: echo 'Login to Docker Hub'
+
+      # https://github.com/redhat-actions/buildah-build#readme
+      - name: Build from Dockerfile
+        run: echo 'Build from Dockerfile'
+
+      # https://github.com/redhat-actions/push-to-registry#readme
+      - name: Push to registry
+        run: echo 'Push to Registry'
+
+      # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
+      - name: Install oc
+        uses: redhat-actions/openshift-tools-installer@v1
+        with:
+          oc: 4
+
+        # https://github.com/redhat-actions/oc-login#readme
+      - name: Deploy
+        run: |
+          set -eux
+          # Login to OpenShift and select project
+          oc login --token=${{ env.OPENSHIFT_TOKEN }} --server=${{ env.OPENSHIFT_SERVER }}
+          oc project ${{ env.OPENSHIFT_NAMESPACE }}
+          # Cancel any rollouts in progress
+          # tag image stream
+          # Process and apply deployment template
+          
+          # UPDATE Configmaps
+          
+          # OVERRIDE Configmaps
+          
+          # Start rollout (if necessary) and follow it
+          
+          # Get status, returns 0 if rollout is successful
+          
+      # now hit it with a zap scan
+      - name: ZAP Scan
+        run: echo 'Run ZAP Scan'
