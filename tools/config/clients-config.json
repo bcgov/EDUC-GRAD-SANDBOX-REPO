@@ -1,7 +1,27 @@
 [
   {
-    "clientId": "client-one",
-    "scopes": ["email", "custom-scope-1"],
+    "clientId": "grad-program-api-client",
+    "scopes": ["CREATE_GRAD_PROGRAM_CODE_DATA", 
+              "CREATE_GRAD_PROGRAM_RULES_DATA", 
+              "CREATE_GRAD_REQUIREMENT_TYPE_CODE_DATA", 
+              "CREATE_GRAD_SPECIAL_PROGRAM_CODE_DATA", 
+              "CREATE_GRAD_SPECIAL_PROGRAM_RULES_DATA", 
+              "DELETE_GRAD_PROGRAM_CODE_DATA", 
+              "DELETE_GRAD_PROGRAM_RULES_DATA", 
+              "DELETE_GRAD_REQUIREMENT_TYPE_CODE_DATA", 
+              "DELETE_GRAD_SPECIAL_PROGRAM_CODE_DATA", 
+              "DELETE_GRAD_SPECIAL_PROGRAM_RULES_DATA", 
+              "READ_GRAD_CAREER_PROGRAM_CODE_DATA", 
+              "READ_GRAD_PROGRAM_CODE_DATA", 
+              "READ_GRAD_PROGRAM_RULES_DATA", 
+              "READ_GRAD_REQUIREMENT_TYPE_CODE_DATA", 
+              "READ_GRAD_SPECIAL_PROGRAM_CODE_DATA", 
+              "READ_GRAD_SPECIAL_PROGRAM_RULES_DATA", 
+              "UPDATE_GRAD_PROGRAM_CODE_DATA", 
+              "UPDATE_GRAD_PROGRAM_RULES_DATA", 
+              "UPDATE_GRAD_REQUIREMENT_TYPE_CODE_DATA", 
+              "UPDATE_GRAD_SPECIAL_PROGRAM_CODE_DATA", 
+              "UPDATE_GRAD_SPECIAL_PROGRAM_RULES_DATA"],
     "settings": {
       "enabled": true,
       "protocol": "openid-connect",
@@ -12,8 +32,8 @@
     }
   },
   {
-    "clientId": "client-two",
-    "scopes": ["profile", "custom-scope-2"],
+    "clientId": "grad-rule-engine-api-client",
+    "scopes": ["RUN_RULE_ENGINE"],
     "settings": {
       "enabled": true,
       "protocol": "openid-connect",
