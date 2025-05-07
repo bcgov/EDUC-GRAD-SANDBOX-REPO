@@ -67,6 +67,18 @@ jobs:
           KEYCLOAK_ADMIN_USER: ${{ secrets.KEYCLOAK_ADMIN_USER }}
           KEYCLOAK_ADMIN_PASS: ${{ secrets.KEYCLOAK_ADMIN_PASS }}
 
+      - name: Run client secret sync
+        run: node ./tools/openshift/fetch-and-create-secrets.js
+        env:
+          KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
+          KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
+          KEYCLOAK_ADMIN_USER: ${{ secrets.KEYCLOAK_ADMIN_USER }}
+          KEYCLOAK_ADMIN_PASS: ${{ secrets.KEYCLOAK_ADMIN_PASS }}
+
+          OPENSHIFT_SERVER: ${{ env.OPENSHIFT_SERVER }}
+          OPENSHIFT_NAMESPACE: ${{ env.GRAD_NAMESPACE }}-dev
+          OPENSHIFT_TOKEN: ${{ env.OPENSHIFT_TOKEN }}
+
       # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
       - name: Install oc
         uses: redhat-actions/openshift-tools-installer@v1
