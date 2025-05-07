@@ -1,8 +1,7 @@
 [
   {
     "clientId": "grad-program-api-client",
-    "scopes": ["CREATE_GRAD_PROGRAM_CODE_DATA", 
-              "CREATE_GRAD_PROGRAM_RULES_DATA", 
+    "scopes": ["CREATE_GRAD_PROGRAM_RULES_DATA", 
               "CREATE_GRAD_REQUIREMENT_TYPE_CODE_DATA", 
               "CREATE_GRAD_SPECIAL_PROGRAM_CODE_DATA", 
               "CREATE_GRAD_SPECIAL_PROGRAM_RULES_DATA", 
