@@ -35,6 +35,22 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install axios
+
+      - name: Create or update clients in Keycloak
+        run: node ./tools/config/clients-and-scopes.js
+        env:
+          KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
+          KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
+          KEYCLOAK_ADMIN_USER: ${{ secrets.KEYCLOAK_ADMIN_USER }}
+          KEYCLOAK_ADMIN_PASS: ${{ secrets.KEYCLOAK_ADMIN_PASS }}
+
       - name: Determine image tags
         if: env.TAG == ''
         run: |
