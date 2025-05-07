@@ -50,10 +50,6 @@ async function createK8sSecret({ clientId, secret }) {
   };
 
   const secretName = `${clientId}-secret`;
-  const clientIdKey = `${clientId}-NAME`.toUpperCase().replace('-', '_');
-  const clientSecretKey = `${clientId}-SECRET`.toUpperCase().replace('-', '_');
-
-  console.log(`Replaced Client ID: "${clientIdKey}"`);
 
   const payload = {
     apiVersion: 'v1',
@@ -63,8 +59,8 @@ async function createK8sSecret({ clientId, secret }) {
     },
     type: 'Opaque',
     data: {
-      [`${clientIdKey}`]: Buffer.from(clientId).toString('base64'),
-      [`${clientSecretKey}`]: Buffer.from(secret).toString('base64')
+      [`${clientId}-NAME`.toUpperCase().replaceAll('-', '_')]: Buffer.from(clientId).toString('base64'),
+      [`${clientId}-SECRET`.toUpperCase().replaceAll('-', '_')]: Buffer.from(secret).toString('base64')
     }
   };
 
