@@ -7,7 +7,7 @@ const realm = process.env.KEYCLOAK_REALM;
 const adminUser = process.env.KEYCLOAK_ADMIN_USER;
 const adminPass = process.env.KEYCLOAK_ADMIN_PASS;
 
-const openshiftApi = process.env.OPENSHIFT_API_URL;
+const openshiftApi = process.env.OPENSHIFT_SERVER;
 const openshiftNamespace = process.env.OPENSHIFT_NAMESPACE;
 const openshiftToken = process.env.OPENSHIFT_TOKEN;
 
