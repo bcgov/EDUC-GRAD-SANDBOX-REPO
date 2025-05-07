@@ -49,7 +49,7 @@ async function createK8sSecret({ clientId, secret }) {
     'Content-Type': 'application/json'
   };
 
-  const secretName = `keycloak-${clientId}-credentials`;
+  const secretName = `${clientId}-secret`;
 
   const payload = {
     apiVersion: 'v1',
@@ -59,8 +59,8 @@ async function createK8sSecret({ clientId, secret }) {
     },
     type: 'Opaque',
     data: {
-      clientId: Buffer.from(clientId).toString('base64'),
-      clientSecret: Buffer.from(secret).toString('base64')
+      `${clientId}.toUpperCase()`: Buffer.from(clientId).toString('base64'),
+      `${clientSecret}.toUpperCase()`: Buffer.from(secret).toString('base64')
     }
   };
 
