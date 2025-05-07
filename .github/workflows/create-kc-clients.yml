@@ -11,18 +11,25 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18'
-
-      - name: Install dependencies
-        run: npm install axios
-
       - name: Create or update clients in Keycloak
-        run: node ./tools/config/clients-and-scopes.js
+        uses: actions/github-script@v7
         env:
           KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
           KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
           KEYCLOAK_ADMIN_USER: ${{ secrets.KEYCLOAK_ADMIN_USER }}
           KEYCLOAK_ADMIN_PASS: ${{ secrets.KEYCLOAK_ADMIN_PASS }}
+        with:
+          script: |
+            const fs = require('fs');
+            const vm = require('vm');
+            const axios = require('axios');
+
+            const scriptCode = fs.readFileSync('./tools/config/clients-and-scopes.js', 'utf8');
+
+            const module = { exports: {} };
+            const sandbox = { require, module, console, process, axios };
+
+            vm.createContext(sandbox);
+            vm.runInContext(scriptCode, sandbox);
+
+            await module.exports({ github, context, core });
