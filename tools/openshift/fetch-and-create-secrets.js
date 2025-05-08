@@ -5,8 +5,6 @@ const https = require('https');
 
 const keycloakUrl = process.env.KEYCLOAK_URL;
 const realm = process.env.KEYCLOAK_REALM;
-//const adminUser = process.env.KEYCLOAK_ADMIN_USER;
-//const adminPass = process.env.KEYCLOAK_ADMIN_PASS;
 
 const openshiftApi = process.env.OPENSHIFT_SERVER;
 const openshiftNamespace = process.env.OPENSHIFT_NAMESPACE;
@@ -15,14 +13,6 @@ const openshiftToken = process.env.OPENSHIFT_TOKEN;
 const config = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'clients.json'), 'utf8'));
 const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // for self-signed certs
 
-/**
- * Retrieves and decodes a Kubernetes/OpenShift secret
- * @param {string} openshiftApi - OpenShift API base URL
- * @param {string} openshiftToken - Bearer token for auth
- * @param {string} openshiftNamespace - Namespace containing the secret
- * @param {string} secretName - Name of the secret
- * @returns {Promise<Object>} - Decoded secret data as key-value pairs
- */
 async function getOpenShiftSecret(openshiftApi, openshiftToken, openshiftNamespace, secretName) {
   const url = `${openshiftApi}/api/v1/namespaces/${openshiftNamespace}/secrets/${secretName}`;
 
