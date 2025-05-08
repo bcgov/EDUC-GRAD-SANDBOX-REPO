@@ -6,6 +6,7 @@ const https = require('https');
 // Load config
 const configPath = path.resolve(__dirname, 'clients-config.json');
 const clients = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // for self-signed certs
 
 const keycloakUrl = process.env.KEYCLOAK_URL;
 const realm = process.env.KEYCLOAK_REALM;
