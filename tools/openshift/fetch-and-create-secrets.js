@@ -1,25 +1,57 @@
 const axios = require('axios');
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 const keycloakUrl = process.env.KEYCLOAK_URL;
 const realm = process.env.KEYCLOAK_REALM;
-const adminUser = process.env.KEYCLOAK_ADMIN_USER;
-const adminPass = process.env.KEYCLOAK_ADMIN_PASS;
+//const adminUser = process.env.KEYCLOAK_ADMIN_USER;
+//const adminPass = process.env.KEYCLOAK_ADMIN_PASS;
 
 const openshiftApi = process.env.OPENSHIFT_SERVER;
 const openshiftNamespace = process.env.OPENSHIFT_NAMESPACE;
 const openshiftToken = process.env.OPENSHIFT_TOKEN;
 
 const config = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'clients.json'), 'utf8'));
+const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // for self-signed certs
 
-async function getAccessToken() {
+/**
+ * Retrieves and decodes a Kubernetes/OpenShift secret
+ * @param {string} openshiftApi - OpenShift API base URL
+ * @param {string} openshiftToken - Bearer token for auth
+ * @param {string} openshiftNamespace - Namespace containing the secret
+ * @param {string} secretName - Name of the secret
+ * @returns {Promise<Object>} - Decoded secret data as key-value pairs
+ */
+async function getOpenShiftSecret(openshiftApi, openshiftToken, openshiftNamespace, secretName) {
+  const url = `${apiUrl}/api/v1/namespaces/${namespace}/secrets/${secretName}`;
+
+  try {
+    const resp = await axios.get(url, {
+      headers: { Authorization: `Bearer ${token}` },
+      httpsAgent
+    });
+
+    const encodedData = resp.data.data;
+    const decodedData = {};
+
+    for (const [key, value] of Object.entries(encodedData)) {
+      decodedData[key] = Buffer.from(value, 'base64').toString('utf-8');
+    }
+
+    return decodedData;
+  } catch (err) {
+    throw new Error(`Failed to retrieve secret "${secretName}": ${err.response?.data?.message || err.message}`);
+  }
+}
+
+async function getAccessToken({username, password}) {
   const url = `${keycloakUrl}/auth/realms/${realm}/protocol/openid-connect/token`;
   const params = new URLSearchParams();
   params.append('grant_type', 'password');
   params.append('client_id', 'admin-cli');
-  params.append('username', adminUser);
-  params.append('password', adminPass);
+  params.append('username', username);
+  params.append('password', password);
 
   const response = await axios.post(url, params);
   return response.data.access_token;
@@ -42,7 +74,7 @@ async function getClientCredentials(token, clientId) {
   };
 }
 
-async function createK8sSecret({ clientId, secret }) {
+async function createOpenshiftSecret({ clientId, secret }) {
   const url = `${openshiftApi}/api/v1/namespaces/${openshiftNamespace}/secrets`;
   const headers = {
     Authorization: `Bearer ${openshiftToken}`,
@@ -79,12 +111,13 @@ async function createK8sSecret({ clientId, secret }) {
 
 (async () => {
   try {
-    const kcToken = await getAccessToken();
-
+    const kcCredentials = await getOpenShiftSecret(openshiftApi, openshiftToken, openshiftNamespace, 'grad-kc-admin');
+    const kcToken = await getAccessToken(kcCredentials);
+    
     for (const clientId of config.clients) {
       console.log(`🔍 Fetching secret for "${clientId}"...`);
       const creds = await getClientCredentials(kcToken, clientId);
-      await createK8sSecret(creds);
+      await createOpenshiftSecret(creds);
     }
 
     console.log('🎉 All secrets processed.');
