@@ -7,7 +7,7 @@ on:
         type: environment
 
 jobs:
-  create-client:
+  create-or-update-clients:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.environment }}
 
