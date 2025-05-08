@@ -1,5 +1,5 @@
 name: Create or Update Keycloak Clients
-run-name: Deploy to ${{ inputs.deploy_target }} by @${{ github.actor }}
+run-name: Create or Update Keycloak Clients in ${{ github.event.inputs.environment }}
 
 on:
   workflow_dispatch:
