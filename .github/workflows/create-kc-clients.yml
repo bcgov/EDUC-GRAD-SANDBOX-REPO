@@ -2,6 +2,9 @@ name: Create or Update Keycloak Clients
 
 on:
   workflow_dispatch:
+    inputs: 
+      environment:
+        type: environment
 
 jobs:
   create-client:
