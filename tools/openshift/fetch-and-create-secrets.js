@@ -24,11 +24,11 @@ const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // for self-s
  * @returns {Promise<Object>} - Decoded secret data as key-value pairs
  */
 async function getOpenShiftSecret(openshiftApi, openshiftToken, openshiftNamespace, secretName) {
-  const url = `${openshiftApi}/api/v1/namespaces/${namespace}/secrets/${secretName}`;
+  const url = `${openshiftApi}/api/v1/namespaces/${openshiftNamespace}/secrets/${secretName}`;
 
   try {
     const resp = await axios.get(url, {
-      headers: { Authorization: `Bearer ${token}` },
+      headers: { Authorization: `Bearer ${openshiftToken}` },
       httpsAgent
     });
 
