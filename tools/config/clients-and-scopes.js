@@ -11,11 +11,12 @@ const httpsAgent = new https.Agent({ rejectUnauthorized: false }); // for self-s
 const keycloakUrl = process.env.KEYCLOAK_URL;
 const realm = process.env.KEYCLOAK_REALM;
 const openshiftApi = process.env.OPENSHIFT_SERVER;
+const gradNamespace = process.env.GRAD_NAMESPACE;
 const openshiftNamespace = process.env.OPENSHIFT_NAMESPACE;
 const openshiftToken = process.env.OPENSHIFT_TOKEN;
 
-async function getOpenShiftSecret(openshiftApi, openshiftToken, openshiftNamespace, secretName) {
-  const url = `${openshiftApi}/api/v1/namespaces/${openshiftNamespace}/secrets/${secretName}`;
+async function getOpenShiftSecret(openshiftApi, openshiftToken, namespace, secretName) {
+  const url = `${openshiftApi}/api/v1/namespaces/${namespace}/secrets/${secretName}`;
 
   try {
     const resp = await axios.get(url, {
@@ -137,7 +138,7 @@ async function assignScopes(token, clientId, scopeNames) {
 
 (async () => {
   try {
-    const kcCredentials = await getOpenShiftSecret(openshiftApi, openshiftToken, openshiftNamespace, 'grad-kc-admin');
+    const kcCredentials = await getOpenShiftSecret(openshiftApi, openshiftToken, gradNamespace, 'grad-kc-admin');
     const token = await getAccessToken(kcCredentials);
 
     for (const client of clients) {
