@@ -11,10 +11,6 @@ env:
   
   KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
   KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
-  #OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
-  #GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-dev
-  #OPENSHIFT_NAMESPACE: ${{ env.OPENSHIFT_NAMESPACE }}
-  #OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
 
   # 🖊️ EDIT to change the image registry settings.
   # Registries such as GHCR, Quay.io, and Docker Hub are supported.
@@ -71,13 +67,6 @@ jobs:
 
       - name: Create/Update client secrets in OC
         run: node ./tools/openshift/fetch-and-create-secrets.js
-        env:
-          KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
-          KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
-          OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
-          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-dev
-          OPENSHIFT_NAMESPACE: ${{ env.OPENSHIFT_NAMESPACE }}
-          OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
           
       # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
       - name: Install oc
