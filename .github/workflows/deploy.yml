@@ -68,8 +68,8 @@ jobs:
           KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
           KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
           OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
-          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ steps.context.outputs.environment }}
-          OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ steps.context.outputs.environment }}
+          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ env.environment }}
+          OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ env.environment }}
           OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
 
       - name: Create/Update client secrets in OC
@@ -78,8 +78,8 @@ jobs:
           KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
           KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
           OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
-          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ steps.context.outputs.environment }}
-          OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ steps.context.outputs.environment }}
+          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ env.environment }}
+          OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ env.environment }}
           OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
           
       # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
