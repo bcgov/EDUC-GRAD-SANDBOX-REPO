@@ -28,7 +28,6 @@ on:
 jobs:
   openshift-ci-cd:
     name: Build and deploy to OpenShift DEV
-    job-id: openshift-ci-cd
     runs-on: ubuntu-22.04
     environment: dev
 
