@@ -58,10 +58,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install axios
-
-      - uses: qoomon/actions--context@v1
-        id: context
-
+        
       - name: Create/Update clients in Keycloak
         run: node ./tools/config/clients-and-scopes.js
         env:
