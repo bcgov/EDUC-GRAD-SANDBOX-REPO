@@ -28,6 +28,7 @@ on:
 jobs:
   openshift-ci-cd:
     name: Build and deploy to OpenShift DEV
+    job-id: openshift-ci-cd
     runs-on: ubuntu-22.04
     environment: dev
 
@@ -59,14 +60,17 @@ jobs:
       - name: Install dependencies
         run: npm install axios
 
+      - uses: qoomon/actions--context@v1
+        id: context
+
       - name: Create/Update clients in Keycloak
         run: node ./tools/config/clients-and-scopes.js
         env:
           KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
           KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
           OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
-          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ jobs.openshift-ci-cd.environment }}
-          OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ jobs.openshift-ci-cd.environment }}
+          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ steps.context.outputs.environment }}
+          OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ steps.context.outputs.environment }}
           OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
 
       - name: Create/Update client secrets in OC
@@ -75,8 +79,8 @@ jobs:
           KEYCLOAK_URL: ${{ secrets.KEYCLOAK_URL }}
           KEYCLOAK_REALM: ${{ secrets.KEYCLOAK_REALM }}
           OPENSHIFT_SERVER: ${{ vars.OPENSHIFT_SERVER }}
-          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ jobs.openshift-ci-cd.environment }}
-          OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ jobs.openshift-ci-cd.environment }}
+          GRAD_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ steps.context.outputs.environment }}
+          OPENSHIFT_NAMESPACE: ${{ vars.GRAD_NAMESPACE }}-${{ steps.context.outputs.environment }}
           OPENSHIFT_TOKEN: ${{ secrets.OPENSHIFT_TOKEN }}
           
       # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
