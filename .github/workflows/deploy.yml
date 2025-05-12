@@ -65,7 +65,7 @@ jobs:
       - name: Create/Update clients
         run: node ./tools/config/clients-and-scopes.js
 
-      - name: Create/Update client secrets
+      - name: Create/Update secrets
         run: node ./tools/openshift/fetch-and-create-secrets.js
           
       # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
