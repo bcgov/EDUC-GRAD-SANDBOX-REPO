@@ -62,10 +62,10 @@ jobs:
       - name: Install dependencies
         run: npm install axios
         
-      - name: Create/Update clients in Keycloak
+      - name: Create/Update clients
         run: node ./tools/config/clients-and-scopes.js
 
-      - name: Create/Update client secrets in OC
+      - name: Create/Update client secrets
         run: node ./tools/openshift/fetch-and-create-secrets.js
           
       # The path the image was pushed to is now stored in ${{ steps.push-image.outputs.registry-path }}
