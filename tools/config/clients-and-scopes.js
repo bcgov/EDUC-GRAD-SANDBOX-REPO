@@ -57,7 +57,7 @@ async function getClientByClientId(token, clientId) {
   return response.data.length > 0 ? response.data[0] : null;
 }
 
-async function createClient(token, client) {
+async function createClient(token, client, secret) {
   const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients`;
   const headers = {
     Authorization: `Bearer ${token}`,
@@ -66,7 +66,7 @@ async function createClient(token, client) {
 
   const data = {
     clientId: client.clientId,
-    secret: client.secret,
+    secret: secret,
     ...client.settings
   };
 
@@ -88,6 +88,22 @@ async function updateClient(token, existingClient, client) {
   };
 
   await axios.put(url, updatedData, { headers });
+}
+
+async function deleteClient(targetClientId) {
+  try {
+    const token = await getAccessToken();
+    const clientUUID = await getClientUUID(token, targetClientId);
+
+    const deleteUrl = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${clientUUID}`;
+    await axios.delete(deleteUrl, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    console.log(`✅ Client '${targetClientId}' deleted.`);
+  } catch (err) {
+    console.error(`❌ Error deleting client:`, err.response?.data || err.message);
+  }
 }
 
 async function ensureScopeExists(token, scopeName) {
@@ -145,15 +161,18 @@ async function assignScopes(token, clientId, scopeNames) {
       console.log(`🚀 Processing client "${client.clientId}"...`);
       let existingClient = await getClientByClientId(token, client.clientId);
       let clientIdValue;
+      let clientSecret;
 
       if (existingClient) {
-        await updateClient(token, existingClient, client);
+        //await updateClient(token, existingClient, client);
         clientIdValue = existingClient.id;
-        console.log(`🔄 Updated client "${client.clientId}".`);
-      } else {
-        clientIdValue = await createClient(token, client);
-        console.log(`➕ Created client "${client.clientId}".`);
-      }
+        clientSecret = existingClient.secret;
+        await deleteClient(clientIdValue);
+        console.log(`🔄 Deleted client "${client.clientId}".`);
+      } 
+      
+      clientIdValue = await createClient(token, client, clientSecret);
+      console.log(`➕ Created client "${client.clientId}".`);
 
       await assignScopes(token, clientIdValue, client.scopes);
     }
