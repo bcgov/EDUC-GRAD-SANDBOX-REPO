@@ -160,7 +160,7 @@ async function assignScopes(token, clientId, scopeNames) {
 
       if (existingClient) {
         clientSecret = existingClient.secret;
-        await deleteClient(token, existingClient.id);
+        await deleteClient(token, client.clientId);
         console.log(`🔄 Deleted client "${client.clientId}".`);
       } 
       
