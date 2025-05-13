@@ -74,6 +74,18 @@ async function createClient(token, client, secret) {
   return response.headers.location.split('/').pop();
 }
 
+async function getClientUUID(accessToken, targetClientId) {
+  const url = `${keycloakUrl}/auth/admin/realms/${REALM}/clients`;
+  const res = await axios.get(url, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+    params: { clientId: targetClientId }
+  });
+
+  const client = res.data.find(c => c.clientId === targetClientId);
+  if (!client) throw new Error(`Client '${targetClientId}' not found.`);
+  return client.id;
+}
+
 async function deleteClient(token, targetClientId) {
   try {
     const clientUUID = await getClientUUID(token, targetClientId);
