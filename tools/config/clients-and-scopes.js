@@ -74,9 +74,8 @@ async function createClient(token, client, secret) {
   return response.headers.location.split('/').pop();
 }
 
-async function deleteClient(targetClientId) {
+async function deleteClient(token, targetClientId) {
   try {
-    const token = await getAccessToken();
     const clientUUID = await getClientUUID(token, targetClientId);
 
     const deleteUrl = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${clientUUID}`;
@@ -149,7 +148,7 @@ async function assignScopes(token, clientId, scopeNames) {
 
       if (existingClient) {
         clientSecret = existingClient.secret;
-        await deleteClient(existingClient.id);
+        await deleteClient(token, existingClient.id);
         console.log(`🔄 Deleted client "${client.clientId}".`);
       } 
       
