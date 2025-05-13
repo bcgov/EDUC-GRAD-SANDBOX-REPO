@@ -74,22 +74,6 @@ async function createClient(token, client, secret) {
   return response.headers.location.split('/').pop();
 }
 
-async function updateClient(token, existingClient, client) {
-  const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients/${existingClient.id}`;
-  const headers = {
-    Authorization: `Bearer ${token}`,
-    'Content-Type': 'application/json'
-  };
-
-  const updatedData = {
-    ...existingClient,
-    secret: client.secret,
-    ...client.settings
-  };
-
-  await axios.put(url, updatedData, { headers });
-}
-
 async function deleteClient(targetClientId) {
   try {
     const token = await getAccessToken();
@@ -164,10 +148,8 @@ async function assignScopes(token, clientId, scopeNames) {
       let clientSecret;
 
       if (existingClient) {
-        //await updateClient(token, existingClient, client);
-        clientIdValue = existingClient.id;
         clientSecret = existingClient.secret;
-        await deleteClient(clientIdValue);
+        await deleteClient(existingClient.id);
         console.log(`🔄 Deleted client "${client.clientId}".`);
       } 
       
