@@ -75,7 +75,7 @@ async function createClient(token, client, secret) {
 }
 
 async function getClientUUID(accessToken, targetClientId) {
-  const url = `${keycloakUrl}/auth/admin/realms/${REALM}/clients`;
+  const url = `${keycloakUrl}/auth/admin/realms/${realm}/clients`;
   const res = await axios.get(url, {
     headers: { Authorization: `Bearer ${accessToken}` },
     params: { clientId: targetClientId }
